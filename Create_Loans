@@ -1,0 +1,47 @@
+public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+        int loanNumber;
+
+        System.out.print("Enter the current prime interest rate: ");
+        double primeRate = scanner.nextDouble();
+
+
+        Loan[] loans = new Loan[5];
+
+
+        for (int i = 0; i < loans.length; i++) {
+            System.out.println("Loan #" + (i+1));
+            System.out.print("Enter 1 for Business Loan or 2 for Personal Loan: ");
+            int loanType = scanner.nextInt();
+            scanner.nextLine();
+
+
+            System.out.print("Enter customer last name: ");
+            String lastName = scanner.nextLine();
+            System.out.print("Enter loan amount: ");
+            double loanAmount = scanner.nextDouble();
+            System.out.print("Enter loan term (1 for short-term, 3 for medium-term, 5 for long-term): ");
+            int loanTerm = scanner.nextInt();
+
+            if (loanType == 1) {
+                scanner.nextLine();
+                System.out.print("Enter business name: ");
+                String businessName = scanner.nextLine();
+                loans[i] = new BusinessLoan(lastName, loanAmount, loanTerm, primeRate, businessName);
+            } else if (loanType == 2) {
+                System.out.print("Enter credit score:  ");
+                int creditScore = scanner.nextInt();
+                loans[i] = new PersonalLoan(lastName, loanAmount, loanTerm, creditScore);
+            }
+        }
+
+
+        for (int i = 0; i < loans.length; i++) {
+            System.out.println(loans[i]);
+        }
+
+        scanner.close();
+    }
+
+}
