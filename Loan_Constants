@@ -1,0 +1,105 @@
+interface LoanConstants {
+    String COMPANY_NAME = "JPL";
+    int SHORT_TERM = 1;
+    int MEDIUM_TERM = 3;
+    int LONG_TERM = 5;
+    double MAX_LOAN_AMOUNT = 50000.0;
+    double SHORT_TERM_PRIME_RATE = 0.01;
+}
+
+abstract class Loan implements LoanConstants {
+    private final int loanNumber;
+    private final String customerLastName;
+    private final double amount;
+    protected double interestRate;
+    private int term;
+
+    public Loan(int loanNumber, String customerLastName, double amount, int term) {
+        this.loanNumber = loanNumber;
+        this.customerLastName = customerLastName;
+        if (amount > MAX_LOAN_AMOUNT) {
+            this.amount = MAX_LOAN_AMOUNT;
+        } else {
+            this.amount = amount;
+        }
+        this.term = term;
+        if (term != SHORT_TERM && term != MEDIUM_TERM && term != LONG_TERM) {
+            this.term = SHORT_TERM;
+        }
+    }
+
+    public abstract void setInterestRate(double rate);
+
+    public double getInterestRate() {
+        return interestRate;
+    }
+
+    public double getLoanAmount() {
+        return amount;
+    }
+
+    public double calculateTotal() {
+        double fee = amount * interestRate * term / 100.0;
+        return amount + fee;
+    }
+
+    public String toString() {
+        return "Loan #" + loanNumber + ": " + customerLastName + ", amount: $" + amount
+                + ", interest rate: " + interestRate + "%, term: " + term + " year(s)";
+    }
+
+    public boolean equals(Object other) {
+        if (other == null || !(other instanceof Loan otherLoan)) {
+            return false;
+        }
+        return loanNumber == otherLoan.loanNumber;
+    }
+}
+
+class BusinessLoan extends Loan {
+    private final String businessName;
+
+    public BusinessLoan(int loanNumber, String customerLastName, double amount, int term, String businessName) {
+        super(loanNumber, customerLastName, amount, term);
+        this.businessName = businessName;
+        setInterestRate(0.01);
+    }
+
+    public BusinessLoan(String customerLastName, double amount, int term, double primeRate, String businessName) {
+        super(0, customerLastName, amount, term);
+        this.businessName = businessName;
+        setInterestRate(primeRate);
+    }
+
+    @Override
+    public void setInterestRate(double rate) {
+        interestRate = SHORT_TERM_PRIME_RATE + rate;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", business name: " + businessName;
+    }
+}
+
+class PersonalLoan extends Loan {
+    private static final int loanNumber = 0;
+    private final int creditScore;
+
+
+    public PersonalLoan(String customerLastName, double amount, int term, int creditScore) {
+        super(loanNumber, customerLastName, amount, term);
+        this.creditScore = creditScore;
+        setInterestRate(0.02);
+    }
+
+    @Override
+    public void setInterestRate(double rate) {
+        interestRate = SHORT_TERM_PRIME_RATE + rate;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", credit score:  " + creditScore;
+    }
+}
